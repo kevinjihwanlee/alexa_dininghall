@@ -7,24 +7,37 @@ import urllib
 url="https://menus.sodexomyway.com/BiteMenu/Menu?menuId=337&locationId=10380001&whereami=http://northwestern.sodexomyway.com/dining-near-me/sargent"
 
 soup = bs(urllib.urlopen(url), 'html.parser')
-# for link in soup.findAll('a'):
-#         print link.string
-# for food in soup.find_all("div", class_="bite-menu-item"):
-#     print food.
 
-categories = []
-for item in soup.select("#menuid-2-day .accordion-copy"):
-    categories.append(item.string)
-
-food = []
+# categories = []
+# for item in soup.select("#menuid-2-day .accordion-copy"):
+#     categories.append(item.string)
+# print categories
+food = {}
 #for item in soup.select(".bite-menu-item button"):
-for item in soup.select(".get-nutrition"):
+# meal_container = soup.find('div', class_='accordion-block')
+
+# for item in meal_container.descendants:
+
+mealtime = ""
+
+currentDay = soup.select("#menuid-2-day")
+
+#for item in soup.select(".get-nutrition"):
+for item in currentDay[0].select(".get-nutrition"):
+    for parent in item.parents:
+        if 'class' in parent.attrs and parent.attrs['class'][0] == 'accordion-block':
+                currentMT = parent.find('div', class_='accordion-title').find('span', class_="accordion-copy").string
+                if mealtime != currentMT:
+                    mealtime = currentMT
+            #print parent.attrs
+    if currentMT not in food:
+        food[currentMT] = []
     if item.string == None:
         # item.string returns None because these specific menu entries have images with them
-        print item.contents[0]
+        food[currentMT].append(item.contents[0].strip())
     else:
-        print item.string
+        food[currentMT].append(item.string.strip())
     #food.append(item.string)
 
-#print food
+# print food
 
