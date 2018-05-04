@@ -1,28 +1,25 @@
 from bs4 import BeautifulSoup as bs
 import urllib
+import time
+import datetime
 
-# storing some information here
-# looks like the menu is divided by day like this: menuid-#-day
-
+# Sargent
 url="https://menus.sodexomyway.com/BiteMenu/Menu?menuId=337&locationId=10380001&whereami=http://northwestern.sodexomyway.com/dining-near-me/sargent"
+
+today = "#menuid-"
+
+if datetime.date.today().strftime("%d")[0:1] is not "0":
+    today = today + datetime.date.today().strftime("%d") + "-day"
+else:
+    today = today + datetime.date.today().strftime("%d")[1:2] + "-day"
 
 soup = bs(urllib.urlopen(url), 'html.parser')
 
-# categories = []
-# for item in soup.select("#menuid-2-day .accordion-copy"):
-#     categories.append(item.string)
-# print categories
 food = {}
-#for item in soup.select(".bite-menu-item button"):
-# meal_container = soup.find('div', class_='accordion-block')
-
-# for item in meal_container.descendants:
-
 mealtime = ""
 
-currentDay = soup.select("#menuid-2-day")
+currentDay = soup.select(today)
 
-#for item in soup.select(".get-nutrition"):
 for item in currentDay[0].select(".get-nutrition"):
     for parent in item.parents:
         if 'class' in parent.attrs and parent.attrs['class'][0] == 'accordion-block':
@@ -39,5 +36,4 @@ for item in currentDay[0].select(".get-nutrition"):
         food[currentMT].append(item.string.strip())
     #food.append(item.string)
 
-# print food
 
