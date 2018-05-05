@@ -1,25 +1,24 @@
-from bs4 import BeautifulSoup as bs
-from bs4 import NavigableString
-import urllib
-import time
-import datetime
+from bs4 import BeautifulSoup as bs, NavigableString
+import urllib, time, datetime
 
-# Sargent
+# the URL that contains the menus of the week for the dining hall
+# currently set to Sargent SEE TODO
 url="https://menus.sodexomyway.com/BiteMenu/Menu?menuId=337&locationId=10380001&whereami=http://northwestern.sodexomyway.com/dining-near-me/sargent"
 
-today = "#menuid-"
+soup = bs(urllib.urlopen(url), 'html.parser')
 
+# grabs the date and adjusts the link accordingly to get the correct menu
+today = "#menuid-"
 if datetime.date.today().strftime("%d")[0:1] is not "0":
     today = today + datetime.date.today().strftime("%d") + "-day"
 else:
     today = today + datetime.date.today().strftime("%d")[1:2] + "-day"
 
-soup = bs(urllib.urlopen(url), 'html.parser')
-
 food = {}
 mealtime = ""
 specific_meal = ""
 
+# pulls the specific menu block
 currentDay = soup.select(today)
 
 for item in currentDay[0].select(".get-nutrition"):
@@ -34,15 +33,15 @@ for item in currentDay[0].select(".get-nutrition"):
                     currentSM = sibling.find('span').string
                     if specific_meal != currentSM:
                         specific_meal = currentSM
-                        print specific_meal
-                    break
+                    break # this break is important because we want to find the FIRST title
     if currentMT not in food:
-        food[currentMT] = []
-    if item.string == None:
-        # item.string returns None because these specific menu entries have images with them
-        food[currentMT].append(item.contents[0].strip())
+        food[currentMT] = {}
+    if currentSM not in food[currentMT]:
+        food[currentMT][currentSM] = []
+    if item.string == None:  # item.string returns None because these specific menu entries have images with them
+        food[currentMT][currentSM].append(item.contents[0].strip())
     else:
-        food[currentMT].append(item.string.strip())
-    #food.append(item.string)
+        food[currentMT][currentSM].append(item.string.strip())
+
 
 
