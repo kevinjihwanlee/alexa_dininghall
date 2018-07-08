@@ -43,5 +43,7 @@ for item in currentDay[0].select(".get-nutrition"):
     else:
         food[currentMT][currentSM].append(item.string.strip())
 
+# testing functionality 
+print food['DINNER']['Daily Dish']
 
 
