@@ -7,3 +7,4 @@ locations = { 'sargent' : '5b33ae291178e909d807593e', 'plex' : '5b3402a21178e909
 # end URL (which includes Site ID)
 end_url = '&platform=0&site_id=5acea5d8f3eeb60b08c5a50d'
 
+# TO-DO: location hours
